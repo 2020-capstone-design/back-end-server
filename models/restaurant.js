@@ -1,47 +1,48 @@
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('restaurant', {
-        rest_num: {
-            type: DataTypes.STRING,
+        restaurant_num: {
+            type: DataTypes.INTEGER,
             allowNull: false,
+            autoIncrement: true,
             primaryKey: true,
         },
-        rest_name: {
+        restaurant_name: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        rest_phone: {
+        restaurant_phone: {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        rest_loc: {
+        restaurant_loc: {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        rest_university: {
+        restaurant_university: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        rest_intro: {
+        restaurant_intro: {
             type: DataTypes.TEXT,
             allowNull: true,
         },
-        rest_img: {
+        restaurant_img: {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        rest_logo: {
+        restaurant_logo: {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        rest_category: {
+        restaurant_category: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        rest_main_menu1: {
+        restaurant_main_menu1: {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        rest_main_menu2: {
+        restaurant_main_menu2: {
             type: DataTypes.STRING,
             allowNull: true,
         }

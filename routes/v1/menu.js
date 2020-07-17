@@ -5,10 +5,9 @@ const { Restaurant, Menu } = require('../../models');
 router.post('/insert_menu', (req, res) => {
     console.log(req.body);
     Menu.create({
-        menu_num : req.body.menu_num,
         menu_name: req.body.menu_name,
         menu_price: req.body.menu_price,
-        fk_rest_num : req.body.fk_rest_num,
+        fk_restaurant_num : req.body.fk_restaurant_num,
     });
     res.status(200).json({
         menu_name: req.body.menu_name,
@@ -22,11 +21,10 @@ router.post('/list_menu', async (req, res) => {
         const menus = await Menu.findAll({
             include: [{
                 model: Restaurant,
-                where: req.rest_num,
+                where: req.restaurant_num,
             }],
             attributes: ['menu_num', 'menu_name', 'menu_price'],
         });
-        console.log(menus);
         res.status(200).json({
             menus
         });

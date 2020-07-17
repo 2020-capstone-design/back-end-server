@@ -18,6 +18,7 @@ const upload = multer({
             cb(null, 'uploads/');
         },
         filename(req, file, cb) {
+            console.log(file.originalname);
             const ext = path.extname(file.originalname);
             cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
         },
@@ -27,11 +28,11 @@ const upload = multer({
 
 router.post('/list_rest', async (req, res, next) => {
     try {
-        console.log(req.body.rest_university);
+        console.log(req.body.restaurant_university);
         const restaurants = await Restaurant.findAll({
             where: {
-                rest_university: req.body.rest_university,
-                rest_category: req.body.rest_category,
+                restaurant_university: req.body.restaurant_university,
+                restaurant_category: req.body.restaurant_category,
             },
         });
         res.status(200).json({
@@ -47,23 +48,22 @@ router.post('/insert_restaurant', upload.single('img'), (req, res) => {
     console.log(req.file);
     const logo = '/img/' + req.file.filename;
     Restaurant.create({
-        rest_num : req.body.rest_num,
-        rest_name : req.body.rest_name,
-        rest_university : req.body.rest_university,
-        rest_category : req.body.rest_category,
-        rest_logo : logo,
-        // rest_main_menu1 : req.body.rest_main_menu1,
-        // rest_main_menu2 : req.body.rest_main_menu2,
-        fk_m_id : req.body.fk_m_id,
+        restaurant_name : req.body.restaurant_name,
+        restaurant_university : req.body.restaurant_university,
+        restaurant_category : req.body.restaurant_category,
+        restaurant_logo : logo,
+        restaurant_main_menu1 : req.body.restaurant_main_menu1,
+        restaurant_main_menu2 : req.body.restaurant_main_menu2,
+        fk_owner_id : req.body.fk_owner_id,
     })
     res.status(200).json({
-        // rest_num: req.body.rest_num,
-        // rest_name: req.body.rest_name,
-        // rest_university : req.body.rest_university,
-        // rest_category : req.body.rest_category,
-        // rest_main_menu1 : req.body.rest_main_menu1,
-        // rest_main_menu2 : req.body.rest_main_menu2,
-        // fk_m_id : req.body.fk_m_id,
+        restaurant_num: req.body.restaurant_num,
+        restaurant_name: req.body.restaurant_name,
+        restaurant_university : req.body.restaurant_university,
+        restaurant_category : req.body.restaurant_category,
+        restaurant_main_menu1 : req.body.restaurant_main_menu1,
+        restaurant_main_menu2 : req.body.restaurant_main_menu2,
+        fk_owner_id : req.body.fk_owner_id,
         url: `/img/${req.file.filename}`
     });
 });

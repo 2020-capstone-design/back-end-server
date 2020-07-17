@@ -1,23 +1,23 @@
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('member', {
-        m_id: {
+        owner_id: {
             type: DataTypes.STRING,
             allowNull: false,
             primaryKey: true,
         },
-        m_password: {
+        owner_password: {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        m_name: {
+        owner_name: {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        m_birth: {
+        owner_birth: {
             type: DataTypes.DATE,
             allowNull: true,
         },
-        m_phone: {
+        owner_phone: {
             type: DataTypes.STRING,
             allowNull: true,
         },

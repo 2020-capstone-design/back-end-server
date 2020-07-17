@@ -9,20 +9,16 @@ router.get('/test', (req, res) => {
   )
 });
 
-router.post('/create_member', (req, res) => {
+
+router.post('/insert_owner', (req, res) => {
   Member.create({
-    m_id : req.body.m_id,
-    m_password : req.body.m_password,
-    m_name: req.body.m_name,
-    m_birth: req.body.m_birth,
-    m_phone: req.body.m_phone,
+    owner_id : req.body.owner_id,
+    owner_password : req.body.owner_password,
+    owner_name: req.body.owner_name,
+    owner_birth: req.body.owner_birth,
+    owner_phone: req.body.owner_phone,
   });
   res.status(200).json({
-    m_id : req.body.m_id,
-    m_password : req.body.m_password,
-    m_name: req.body.m_name,
-    m_birth: req.body.m_birth,
-    m_phone: req.body.m_phone,
   });
 });
 
@@ -45,7 +41,7 @@ router.post('/list', async (req, res, next) => {
   }
 });
 
-router.post('/listall', async (req, res, next) => {
+router.post('/list_owner', async (req, res, next) => {
   try {
     console.log(req.body.m_name);
     const members = await Member.findAll({
