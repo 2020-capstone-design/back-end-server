@@ -9,7 +9,6 @@ router.get('/test', (req, res) => {
   )
 });
 
-
 router.post('/insert_owner', (req, res) => {
   Member.create({
     owner_id : req.body.owner_id,

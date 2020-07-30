@@ -42,7 +42,7 @@ app.use(function(err, req, res, next) {
   return res.status(err.status || 500).json(res.locals.error);
 });
 
-app.listen(app.get('port'), 50000, () => {
+app.listen(app.get('port'), 3000, () => {
   console.log(app.get('port'), '번 포트에서 대기 중');
 });
 
