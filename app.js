@@ -3,15 +3,18 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+//const passport = require('passport');
 
 const indexRouter = require('./routes/v1');
 const restaurantRouter = require('./routes/v1/restaurant');
 const menuRouter = require('./routes/v1/menu');
 const { sequelize } = require('./models');
+//const passportConfig = require('./passport');
 
 const app = express();
 
 sequelize.sync();
+//passportConfig(passport);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
