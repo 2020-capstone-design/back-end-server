@@ -9,16 +9,20 @@ router.get('/test', (req, res) => {
   )
 });
 
-router.post('/insert_owner', (req, res) => {
-  Member.create({
-    owner_id : req.body.owner_id,
-    owner_password : req.body.owner_password,
-    owner_name: req.body.owner_name,
-    owner_birth: req.body.owner_birth,
-    owner_phone: req.body.owner_phone,
-  });
-  res.status(200).json({
-  });
+router.post('/insert_owner', async(req, res) => {
+  try{
+    await Member.create({
+      owner_id : req.body.owner_id,
+      owner_password : req.body.owner_password,
+      owner_name: req.body.owner_name,
+      owner_birth: req.body.owner_birth,
+      owner_phone: req.body.owner_phone,
+    });
+    res.status(200);
+  } catch (err) {
+    console.err(err);
+    next(err);
+  }
 });
 
 router.post('/list', async (req, res, next) => {

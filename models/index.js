@@ -13,6 +13,7 @@ db.Sequelize = Sequelize;
 db.Member = require('./owner')(sequelize, Sequelize);
 db.Menu = require('./menu')(sequelize, Sequelize);
 db.Restaurant = require('./restaurant')(sequelize, Sequelize);
+db.Owner = require('./owner')(sequelize, Sequelize);
 
 db.Member.hasMany(db.Restaurant, { foreignKey: 'fk_owner_id' , sourceKey: 'owner_id' } );
 db.Restaurant.belongsTo(db.Member, { foreignKey: 'fk_owner_id', targetKey: 'owner_id' });

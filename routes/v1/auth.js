@@ -1,26 +1,29 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const { newToken } = require('../../utils/auth');
 const { Owner } = require('../../models')
 
 const router = express.Router();
 
 router.post('/login', (req, res) => {
     Owner.findOne({
-        owner_id: req.body.username,
+        where: {owner_id: req.body.username},
     })
         .then(user=> {
+            console.log(user);
             if (!user) {
-                res.status(401).send('Authentication failed. User not found.');
+                res.status(401).send('입력하신 아이디에 대한 정보가 없습니다.');
             }
-            bcrypt.compare(req.body.passwod, user.password, (error, result) => {
+            bcrypt.compare(req.body.password, user.owner_password, (error, result) => {
                 if (error) {
                     res.status(500).send('Internal Server Error');
                 }
+
                 if (result) {
                     const token = newToken(user);
 
                     const loggedInUser = {
-                        owner_id: user.owner_id,
+                        username: user.owner_id,
                     };
 
                     res.status(200).json({
@@ -30,49 +33,45 @@ router.post('/login', (req, res) => {
                         token: token,
                     });
                 } else {
-                    res.status(401).json('Authentication failed. Wrong password.');
+                    console.log(result);
+                    res.status(401).json('비밀번호가 올바르지 않습니다.');
                 }
             });
         })
         .catch(error => {
+            console.error(error);
             res.status(500).json('Internal Server Error');
             throw error;
         });
 });
 
 router.post('/signup',async (req, res) => {
-    const { username, password, name, birthday, phonenumber } = req.body;
+    const { owner_id, password, name, birthday, phonenumber } = req.body;
     console.log(req.body);
     // encrypt password
     // NOTE: 10 is saltround which is a cost factor;
 
-    await bcrypt.hash(password, 10,  async (error, hashedPassword) => {
-        if (error) {
-            console.log('실패');
-            console.log(error);
-            return res.status(500).json({
-                error,
-            });
-        } else {
-            console.log('들어옴');
-            await Owner.create({
-                owner_id: username,
-                owner_password: hashedPassword,
-                owner_name: name,
-                owner_birth: birthday,
-                owner_phone: phonenumber,
-            })
-                .then((error, user) => {
-                    if (error) {
-                        console.log(error);
-                        res.status(409).send(error);
-                    } else {
-                        console.log(user);
-                        res.send(user);
-                    }
-                })
+    try {
+        const exUser = await Owner.findOne({where: { owner_id }});
+        if (exUser) {
+            res.status(409);
         }
-    });
+        const hashedPassword = await bcrypt.hash(password, 12);
+        await Owner.create({
+            owner_id: owner_id,
+            owner_password: hashedPassword,
+            owner_name: name,
+            owner_birth: birthday,
+            owner_phone: phonenumber,
+        });
+        return res.status(200).send('success');
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            error,
+        });
+    }
+
 });
 
 module.exports = router;

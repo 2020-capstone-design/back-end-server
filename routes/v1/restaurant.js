@@ -44,28 +44,54 @@ router.post('/list_rest', async (req, res, next) => {
     }
 });
 
+// router.post('/list_rest', async (req, res, next) => {
+//     try {
+//         const restaurants = await Restaurant.findAll({
+//             where: {
+//                 fk_owner_id: req.body.username
+//             }
+//         });
+//         res.status(200).json({
+//             restaurants
+//         });
+//     } catch (error) {
+//         console.log(error);
+//         next(error);
+//     }
+// });
+
 router.post('/insert_restaurant', upload.single('img'), (req, res) => {
-    console.log(req.file);
-    const logo = '/img/' + req.file.filename;
-    Restaurant.create({
-        restaurant_name : req.body.restaurant_name,
-        restaurant_university : req.body.restaurant_university,
-        restaurant_category : req.body.restaurant_category,
-        restaurant_logo : logo,
-        restaurant_main_menu1 : req.body.restaurant_main_menu1,
-        restaurant_main_menu2 : req.body.restaurant_main_menu2,
-        fk_owner_id : req.body.fk_owner_id,
-    })
-    res.status(200).json({
-        restaurant_num: req.body.restaurant_num,
-        restaurant_name: req.body.restaurant_name,
-        restaurant_university : req.body.restaurant_university,
-        restaurant_category : req.body.restaurant_category,
-        restaurant_main_menu1 : req.body.restaurant_main_menu1,
-        restaurant_main_menu2 : req.body.restaurant_main_menu2,
-        fk_owner_id : req.body.fk_owner_id,
-        url: `/img/${req.file.filename}`
-    });
+    try{
+        console.log(req.body);
+        const logo = '/img/' + req.body.restaurant_logo;
+        console.log('데이터', logo);
+        Restaurant.create({
+            restaurant_name : req.body.restaurant_name,
+            restaurant_phone : req.body.restaurant_phone,
+            restaurant_loc : req.body.restaurant_loc,
+            restaurant_university : req.body.restaurant_university,
+            restaurant_intro : req.body.restaurant_intro,
+            restaurant_category : req.body.restaurant_category,
+            restaurant_logo : logo,
+            restaurant_main_menu1 : req.body.restaurant_main_menu1,
+            restaurant_main_menu2 : req.body.restaurant_main_menu2,
+            fk_owner_id : req.body.fk_owner_id,
+        })
+        res.status(200).json({
+            restaurant_num: req.body.restaurant_num,
+            restaurant_name: req.body.restaurant_name,
+            restaurant_university : req.body.restaurant_university,
+            restaurant_category : req.body.restaurant_category,
+            restaurant_main_menu1 : req.body.restaurant_main_menu1,
+            restaurant_main_menu2 : req.body.restaurant_main_menu2,
+            fk_owner_id : req.body.fk_owner_id,
+            url: `/img/${req.filename}`
+        });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+
 });
 
 module.exports = router;
