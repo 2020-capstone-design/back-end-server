@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define('restaurant', {
         restaurant_num: {
@@ -45,9 +46,14 @@ module.exports = (sequelize, DataTypes) => {
         restaurant_main_menu2: {
             type: DataTypes.STRING,
             allowNull: true,
+        },
+        created_at: {
+            type: DataTypes.DATE,
+            allowNull: true,
+            defaultValue: Sequelize.NOW,
         }
     }, {
         timestamps: false,
-        tableName: 'restaurant',
+        tableName: 'restaurants',
     })
 }
