@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('member', {
+    return sequelize.define('owner', {
         owner_id: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -23,6 +23,6 @@ module.exports = (sequelize, DataTypes) => {
         },
     }, {
         timestamps: false,
-        tableName: 'member',
+        tableName: 'owners',
     })
 }

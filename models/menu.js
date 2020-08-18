@@ -17,6 +17,6 @@ module.exports = (sequlize, DataTypes) => {
         },
     }, {
         timestamps: false,
-        tableName: 'menu',
+        tableName: 'menus',
     })
 }
