@@ -47,11 +47,24 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true,
         },
+        restaurant_operating_time: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        restaurant_closed_days: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        restaurant_on_off: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
+        },
         created_at: {
             type: DataTypes.DATE,
             allowNull: true,
             defaultValue: Sequelize.NOW,
-        }
+        },
     }, {
         timestamps: false,
         tableName: 'restaurants',
