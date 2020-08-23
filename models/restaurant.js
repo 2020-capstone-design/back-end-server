@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         restaurant_on_off: {
             type: DataTypes.BOOLEAN,
-            allowNull: false,
+            allowNull: true,
             defaultValue: false,
         },
         created_at: {
