@@ -1,9 +1,0 @@
-{
-  "development": {
-    "username": "beomju",
-    "password": "wisoft!0318",
-    "database": "capstone",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
-  }
-}
