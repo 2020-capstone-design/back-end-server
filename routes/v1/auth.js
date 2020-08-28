@@ -41,15 +41,13 @@ router.post('/login', (req, res) => {
         .catch(error => {
             console.error(error);
             res.status(500).json('Internal Server Error');
-            throw error;
+            next(error);
         });
 });
 
 router.post('/signup',async (req, res) => {
     const { owner_id, password, name, birthday, phonenumber } = req.body;
     console.log(req.body);
-    // encrypt password
-    // NOTE: 10 is saltround which is a cost factor;
 
     try {
         const exUser = await Owner.findOne({where: { owner_id }});
@@ -71,7 +69,6 @@ router.post('/signup',async (req, res) => {
             error,
         });
     }
-
 });
 
 module.exports = router;
