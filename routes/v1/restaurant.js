@@ -23,16 +23,51 @@ const upload = multer({
             cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
         },
     }),
-    limits: {fileSize: 5 * 300 * 300},
+    limits: {fileSize: 5 * 1024 * 1024},
 });
 
-router.post('/list_rest', async (req, res, next) => {
+router.get('/list_restaurants/:restaurant_university&:restaurant_category', async (req, res, next) => {
     try {
-        console.log(req.body.restaurant_university);
+        //console.log(req.params.restaurant_university);
+        const restaurants = await Restaurant.findAll( {
+            where: {
+                restaurant_university: req.params.restaurant_university,
+                restaurant_category: req.params.restaurant_category,
+            },
+            order: [['restaurant_on_off', 'DESC']],
+        });
+        console.log(req.params.restaurant_university, req.params.restaurant_category);
+        res.status(200).json({
+            restaurants
+        });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
+
+router.get('/list_restaurant/:restaurant_num', async (req, res, next) => {
+    try {
+        const restaurant = await Restaurant.findOne({
+            where: {
+                restaurant_num: req.params.restaurant_num,
+            },
+        });
+        res.status(200).json({
+            restaurant
+        });
+    } catch (error) {
+        console.log(error);
+        next(error);
+   }
+});
+
+router.get('/list_restaurants/:username', async (req, res, next) => {
+    console.log(req.params.username);
+    try {
         const restaurants = await Restaurant.findAll({
             where: {
-                restaurant_university: req.body.restaurant_university,
-                restaurant_category: req.body.restaurant_category,
+                fk_owner_id: req.params.username,
             },
         });
         res.status(200).json({
@@ -44,27 +79,14 @@ router.post('/list_rest', async (req, res, next) => {
     }
 });
 
-// router.post('/list_rest', async (req, res, next) => {
-//     try {
-//         const restaurants = await Restaurant.findAll({
-//             where: {
-//                 fk_owner_id: req.body.username
-//             }
-//         });
-//         res.status(200).json({
-//             restaurants
-//         });
-//     } catch (error) {
-//         console.log(error);
-//         next(error);
-//     }
-// });
-
-router.post('/insert_restaurant', upload.single('img'), (req, res) => {
+router.post('/insert_restaurant', upload.single('logo'), (req, res, next) => {
     try{
+        console.log('req.file', req.file);
         console.log(req.body);
-        const logo = '/img/' + req.body.restaurant_logo;
-        console.log('데이터', logo);
+        let logo;
+        if (req.file !== undefined) {
+            logo = '/img/' + req.file.filename;
+        }
         Restaurant.create({
             restaurant_name : req.body.restaurant_name,
             restaurant_phone : req.body.restaurant_phone,
@@ -75,24 +97,53 @@ router.post('/insert_restaurant', upload.single('img'), (req, res) => {
             restaurant_logo : logo,
             restaurant_main_menu1 : req.body.restaurant_main_menu1,
             restaurant_main_menu2 : req.body.restaurant_main_menu2,
+            restaurant_operating_time : req.body.restaurant_operating_time,
+            restaurant_closed_days : req.body.restaurant_closed_days,
+            restaurant_on_off : req.body.restaurant_on_off,
             fk_owner_id : req.body.fk_owner_id,
         })
-        res.status(200).json({
-            restaurant_num: req.body.restaurant_num,
-            restaurant_name: req.body.restaurant_name,
-            restaurant_university : req.body.restaurant_university,
-            restaurant_category : req.body.restaurant_category,
-            restaurant_main_menu1 : req.body.restaurant_main_menu1,
-            restaurant_main_menu2 : req.body.restaurant_main_menu2,
-            fk_owner_id : req.body.fk_owner_id,
-            url: `/img/${req.filename}`
-        });
+        res.status(200).send('success!');
     } catch (error) {
         console.log(error);
         next(error);
     }
-
 });
+
+router.put('/update_restaurant/:restaurant_num', async(req, res, next) => {
+    try {
+        await Restaurant.update({
+            restaurant_name : req.body.restaurant_name,
+            restaurant_phone : req.body.restaurant_phone,
+            restaurant_loc : req.body.restaurant_loc,
+            restaurant_university : req.body.restaurant_university,
+            restaurant_intro : req.body.restaurant_intro,
+            restaurant_category : req.body.restaurant_category,
+            restaurant_main_menu1 : req.body.restaurant_main_menu1,
+            restaurant_main_menu2 : req.body.restaurant_main_menu2,
+            restaurant_operating_time : req.body.restaurant_operating_time,
+            restaurant_closed_days : req.body.restaurant_closed_days,
+        }, {
+            where: {restaurant_num: req.params.restaurant_num}
+        });
+        res.status(200).send('성공적으로 수정하였습니다.');
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+})
+
+router.delete('/delete_restaurant/:restaurant_num', async (req, res, next) => {
+    try {
+        console.log(req.params.restaurant_num);
+        await Restaurant.destroy({
+            where: { restaurant_num: req.params.restaurant_num }
+        })
+        res.status(200).send('성공적으로 삭제하였습니다.')
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+})
 
 module.exports = router;
 
