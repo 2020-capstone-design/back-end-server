@@ -4,12 +4,14 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+require('dotenv').config();
 //const passport = require('passport');
 
 const indexRouter = require('./routes/v1');
 const restaurantRouter = require('./routes/v1/restaurant');
 const menuRouter = require('./routes/v1/menu');
 const authRouter = require('./routes/v1/auth');
+const ownerRouter = require('./routes/v1/owner');
 const { sequelize } = require('./models');
 //const passportConfig = require('./passport');
 
@@ -35,6 +37,7 @@ app.use('/v1', indexRouter);
 app.use('/v1/restaurant', restaurantRouter);
 app.use('/v1/menu', menuRouter);
 app.use('/v1/auth', authRouter)
+app.use('/v1/owner', ownerRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
