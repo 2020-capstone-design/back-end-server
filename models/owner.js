@@ -1,28 +1,39 @@
-module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('owner', {
-        owner_id: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            primaryKey: true,
-        },
-        owner_password: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        owner_name: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        owner_birth: {
-            type: DataTypes.DATE,
-            allowNull: true,
-        },
-        owner_phone: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-    }, {
-        timestamps: false,
-        tableName: 'owners',
-    })
+const Sequelize = require('sequelize');
+
+module.exports = class Owner extends Sequelize.Model {
+    static init(sequelize) {
+        return super.init({
+            owner_id: {
+                type: Sequelize.STRING(20),
+                allowNull: false,
+                primaryKey: true,
+            },
+            owner_password: {
+                type: Sequelize.STRING(100),
+                allowNull: false,
+            },
+            owner_name: {
+                type: Sequelize.STRING(20),
+                allowNull: false,
+            },
+            owner_birth: {
+                type: Sequelize.DATE,
+                allowNull: true,
+            },
+            owner_phone: {
+                type: Sequelize.STRING(20),
+                allowNull: true,
+            },
+        }, {
+            sequelize,
+            timestamps: false,
+            tableName: 'owners',
+            modelName: 'Owner',
+            charset: 'utf8',
+            collate: 'utf8_general_ci',
+        });
+    }
+    static associate(db) {
+        db.Owner.hasMany(db.Restaurant, { foreignKey: 'fk_owner_id', sourceKey: 'owner_id', onDelete: 'CASCADE' });
+    }
 }
