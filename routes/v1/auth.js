@@ -5,12 +5,13 @@ const { Owner } = require('../../models')
 
 const router = express.Router();
 
-router.post('/login', (req, res) => {
+router.post('/login', (req, res, next) => {
+    console.log(req.body);
     Owner.findOne({
         where: {owner_id: req.body.username},
     })
         .then(user=> {
-            console.log(user);
+            console.log('user', user);
             if (!user) {
                 res.status(401).send('입력하신 아이디에 대한 정보가 없습니다.');
             }
@@ -33,7 +34,7 @@ router.post('/login', (req, res) => {
                         token: token,
                     });
                 } else {
-                    console.log(result);
+                    console.log('result', result);
                     res.status(401).json('비밀번호가 올바르지 않습니다.');
                 }
             });
@@ -47,12 +48,13 @@ router.post('/login', (req, res) => {
 
 router.post('/signup',async (req, res) => {
     const { owner_id, password, name, birthday, phonenumber } = req.body;
-    console.log(req.body);
+    console.log('body', req.body);
 
     try {
-        const exUser = await Owner.findOne({where: { owner_id }});
+        const exUser = await Owner.findOne({where: { owner_id: owner_id }});
+        console.log('exUser', exUser);
         if (exUser) {
-            res.status(409);
+            res.status(409).send('이미 가입된 아이디입니다.');
         }
         const hashedPassword = await bcrypt.hash(password, 12);
         await Owner.create({
@@ -62,12 +64,12 @@ router.post('/signup',async (req, res) => {
             owner_birth: birthday,
             owner_phone: phonenumber,
         });
-        return res.status(200).send('success');
+        return res.status(201).json(owner_id);
     } catch (error) {
         console.error(error);
-        return res.status(500).json({
-            error,
-        });
+        return res.status(500).json(
+            'Internal Server Error'
+        );
     }
 });
 
