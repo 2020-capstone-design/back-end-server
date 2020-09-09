@@ -13,6 +13,10 @@ module.exports = class Menu extends Sequelize.Model {
                 type: Sequelize.STRING(20),
                 allowNull: false,
             },
+            menu_category: {
+                type: Sequelize.STRING(20),
+                allowNull: false,
+            },
             menu_intro: {
                 type: Sequelize.STRING(100),
                 allowNull: true,
