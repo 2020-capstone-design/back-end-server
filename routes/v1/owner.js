@@ -3,12 +3,12 @@ const router = express.Router();
 
 const {Owner} = require('../../models');
 
-router.get('/ownerInfo/:id', (req, res, next) => {
+router.get('/owner_info/:id', (req, res, next) => {
     Owner.findOne({
         where: {owner_id: req.params.id},
     })
         .then(user => {
-            res.json(user);
+            res.json({ user });
         })
         .catch(error => {
             console.error(error);
@@ -16,6 +16,23 @@ router.get('/ownerInfo/:id', (req, res, next) => {
             next(error);
         })
 });
+
+router.patch('/update_owner_info', async (req, res, next) => {
+    try {
+        await Owner.update({
+            owner_name: req.body.name,
+            owner_birth: req.body.birth,
+            owner_phone: req.body.phone,
+        }, {
+            where: {owner_id: req.body.username},
+        })
+        res.status(200).json('success');
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+        next(error);
+    }
+})
 
 
 router.delete('/delete_owner/:id', async (req, res, next) => {
