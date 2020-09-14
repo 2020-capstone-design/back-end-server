@@ -5,7 +5,7 @@ const db = {};
 
 const Owner = require('./owner');
 const Restaurant = require('./restaurant');
-const Menu = require('./Menu');
+const Menu = require('./menu');
 const Hashtag = require('./hashtag');
 
 const sequelize = new Sequelize(
