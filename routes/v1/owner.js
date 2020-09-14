@@ -34,7 +34,6 @@ router.patch('/update_owner_info', async (req, res, next) => {
     }
 })
 
-
 router.delete('/delete_owner/:id', async (req, res, next) => {
 
     console.log(req.params.id);
