@@ -7,6 +7,13 @@ module.exports = {
       database: "capstone",
       host: "127.0.0.1",
       dialect: "postgres",
+    },
+    production: {
+        username: "beomju",
+        password: process.env.SEQUELIZE_PASSWORD,
+        database: "capstone",
+        host: "127.0.0.1",
+        dialect: "postgres",
     }
 }
 
