@@ -2,16 +2,16 @@ require('dotenv').config();
 
 module.exports = {
     development: {
-      username: "nasajang",
+      username: "beomju",
       password: process.env.SEQUELIZE_PASSWORD,
-      database: "design",
+      database: "capstone",
       host: "127.0.0.1",
       dialect: "postgres",
     },
-    production: {
-        username: "nasajang",
-        password: 'wisoft!0318',
-        database: "design",
+    production
+        username: "beomju",
+        password: process.env.SEQUELIZE_PASSWORD,
+        database: "capstone",
         host: "127.0.0.1",
         dialect: "postgres",
         logging: false,
