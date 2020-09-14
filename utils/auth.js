@@ -2,7 +2,7 @@
 const jwt = require ('jsonwebtoken');
 const { SECRET_KEY, EXPIRATION_DATE } = require ('../config/index');
 // modules
-const Owner = require('../models')
+const Owner = require('../models/owner');
 
 const newToken = user => {
     const payload = {
