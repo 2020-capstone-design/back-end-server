@@ -43,6 +43,10 @@ app.use('/v1/menu', menuRouter);
 app.use('/v1/auth', authRouter)
 app.use('/v1/owner', ownerRouter);
 
+app.get('/', (req, res) => {
+    res.send('Hello, Express');
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
