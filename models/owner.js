@@ -17,7 +17,7 @@ module.exports = class Owner extends Sequelize.Model {
                 allowNull: false,
             },
             owner_birth: {
-                type: Sequelize.DATE,
+                type: Sequelize.STRING(20),
                 allowNull: true,
             },
             owner_phone: {

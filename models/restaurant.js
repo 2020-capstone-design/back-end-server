@@ -77,8 +77,8 @@ module.exports = class Restaurant extends Sequelize.Model {
         });
     }
     static associate(db) {
-        db.Restaurant.hasMany(db.Menu, { foreignKey: 'fk_restaurant_num', sourceKey: 'restaurant_num', onDelete: 'CASCADE'  });
+        db.Restaurant.hasMany(db.Menu, { foreignKey: 'fk_restaurant_num', sourceKey: 'restaurant_num', onDelete: 'CASCADE' });
         db.Restaurant.belongsTo(db.Owner, { foreignKey: 'fk_owner_id', targetKey: 'owner_id', onDelete: 'CASCADE' });
+        db.Restaurant.hasMany(db.Hashtag, {foreignKey:'', sourceKey: '',} );
     }
-
 }
