@@ -29,23 +29,21 @@ module.exports = class Restaurant extends Sequelize.Model {
                 type: Sequelize.TEXT,
                 allowNull: true,
             },
-            restaurant_img: {
+            restaurant_image: {
                 type: Sequelize.STRING(100),
                 allowNull: true,
+                defaultValue: 'noImage'
             },
             restaurant_logo: {
                 type: Sequelize.STRING(100),
                 allowNull: true,
+                defaultValue: 'noImage'
             },
             restaurant_category: {
                 type: Sequelize.STRING(20),
                 allowNull: false,
             },
-            restaurant_main_menu1: {
-                type: Sequelize.STRING(20),
-                allowNull: true,
-            },
-            restaurant_main_menu2: {
+            restaurant_main_menu: {
                 type: Sequelize.STRING(20),
                 allowNull: true,
             },
@@ -57,10 +55,14 @@ module.exports = class Restaurant extends Sequelize.Model {
                 type: Sequelize.STRING,
                 allowNull: true,
             },
-            restaurant_on_off: {
+            restaurant_isOpen: {
                 type: Sequelize.BOOLEAN,
                 allowNull: true,
                 defaultValue: false,
+            },
+            restaurant_food_origin: {
+                type: Sequelize.STRING,
+                allowNull: true,
             },
             created_at: {
                 type: Sequelize.DATE,
@@ -79,6 +81,6 @@ module.exports = class Restaurant extends Sequelize.Model {
     static associate(db) {
         db.Restaurant.hasMany(db.Menu, { foreignKey: 'fk_restaurant_num', sourceKey: 'restaurant_num', onDelete: 'CASCADE' });
         db.Restaurant.belongsTo(db.Owner, { foreignKey: 'fk_owner_id', targetKey: 'owner_id', onDelete: 'CASCADE' });
-        db.Restaurant.hasMany(db.Hashtag, {foreignKey:'', sourceKey: '',} );
+        db.Restaurant.belongsToMany(db.Hashtag, {as: 'RestaurantHashtags', through:'restaurants_has_hashtags', foreignKey: 'restaurant_num'} );
     }
 }
