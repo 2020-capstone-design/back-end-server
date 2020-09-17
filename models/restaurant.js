@@ -29,12 +29,22 @@ module.exports = class Restaurant extends Sequelize.Model {
                 type: Sequelize.TEXT,
                 allowNull: true,
             },
-            restaurant_image: {
+            restaurant_outside_image: {
                 type: Sequelize.STRING(100),
                 allowNull: true,
                 defaultValue: 'noImage'
             },
             restaurant_logo: {
+                type: Sequelize.STRING(100),
+                allowNull: true,
+                defaultValue: 'noImage'
+            },
+            restaurant_menu_image1: {
+                type: Sequelize.STRING(100),
+                allowNull: true,
+                defaultValue: 'noImage'
+            },
+            restaurant_menu_image2: {
                 type: Sequelize.STRING(100),
                 allowNull: true,
                 defaultValue: 'noImage'
@@ -64,6 +74,10 @@ module.exports = class Restaurant extends Sequelize.Model {
                 type: Sequelize.STRING,
                 allowNull: true,
             },
+            restaurant_break_time: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
             created_at: {
                 type: Sequelize.DATE,
                 allowNull: true,
@@ -81,6 +95,5 @@ module.exports = class Restaurant extends Sequelize.Model {
     static associate(db) {
         db.Restaurant.hasMany(db.Menu, { foreignKey: 'fk_restaurant_num', sourceKey: 'restaurant_num', onDelete: 'CASCADE' });
         db.Restaurant.belongsTo(db.Owner, { foreignKey: 'fk_owner_id', targetKey: 'owner_id', onDelete: 'CASCADE' });
-        db.Restaurant.belongsToMany(db.Hashtag, {as: 'RestaurantHashtags', through:'restaurants_has_hashtags', foreignKey: 'restaurant_num'} );
     }
 }
