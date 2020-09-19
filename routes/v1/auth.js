@@ -6,7 +6,7 @@ const { Owner } = require('../../models')
 const router = express.Router();
 
 router.post('/login', (req, res, next) => {
-    console.log(req.body);
+
     Owner.findOne({
         where: {owner_id: req.body.username},
     })
@@ -47,12 +47,13 @@ router.post('/login', (req, res, next) => {
 });
 
 router.post('/signup',async (req, res) => {
-    const { owner_id, password, name, birthday, phonenumber } = req.body;
-    console.log('body', req.body);
 
     try {
+        const { owner_id, password, name, birthday, phonenumber } = req.body;
+        if(owner_id === '' || password === '' || name === '')
+            return res.status(401).json('올바르지 않은 형식입니다.');
+
         const exUser = await Owner.findOne({where: { owner_id: owner_id }});
-        console.log('exUser', exUser);
         if (exUser) {
             res.status(409).send('이미 가입된 아이디입니다.');
         }
