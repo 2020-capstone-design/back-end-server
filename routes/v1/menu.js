@@ -57,6 +57,27 @@ router.get('/list_menu/:menu_num', async (req, res, next) => {
     }
 })
 
+router.put('/update_menu', async (req, res) => {
+    try {
+        const {menuNum, newMenuName, newMenuCategory, newMenuIntro, newMenuPrice} = req.body;
+        console.log(menuNum, newMenuName);
+        await Menu.update({
+            menu_name: newMenuName,
+            menu_category: newMenuCategory,
+            menu_intro: newMenuIntro,
+            menu_price: newMenuPrice,
+        },{
+            where: {
+                menu_num: menuNum,
+            },
+        })
+        res.status(200).json('메뉴 성공적으로 수정하였습니다.');
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+    }
+})
+
 router.delete('/delete_menu/:menu_num', async (req, res, next) => {
     try {
         console.log(req.params.menu_num);
