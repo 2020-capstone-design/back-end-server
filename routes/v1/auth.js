@@ -11,7 +11,6 @@ router.post('/login', (req, res, next) => {
         where: {owner_id: req.body.username},
     })
         .then(user=> {
-            console.log('user', user);
             if (!user) {
                 res.status(401).send('입력하신 아이디에 대한 정보가 없습니다.');
             }
@@ -22,6 +21,7 @@ router.post('/login', (req, res, next) => {
 
                 if (result) {
                     const token = newToken(user);
+                    console.log(token);
 
                     const loggedInUser = {
                         username: user.owner_id,
@@ -41,12 +41,11 @@ router.post('/login', (req, res, next) => {
         })
         .catch(error => {
             console.error(error);
-            res.status(500).json('Internal Server Error');
             next(error);
         });
 });
 
-router.post('/signup',async (req, res) => {
+router.post('/signup',async (req, res, next) => {
 
     try {
         const { owner_id, password, name, birthday, phonenumber } = req.body;

@@ -232,7 +232,7 @@ router.patch('/update_restaurant_logo', upload.single('logo'), async (req, res, 
     }
 })
 
-router.patch('/update_restaurant_outside_image', upload.single('outside_image'), async (req, res) => {
+router.patch('/update_restaurant_outside_image', upload.single('outside_image'), async(req, res) => {
     try {
         console.log(req.file, req.body.restaurant_num);
         let outside_image;

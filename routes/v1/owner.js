@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const bcrypt = require('bcrypt');
 
 const {Owner} = require('../../models');
 
@@ -40,26 +41,33 @@ router.patch('/update_owner_password', async (req, res, next) => {
         if(owner_id === '' || oldPassword === '' || newPassword === '')
             return res.status(401).json('올바르지 않은 형식입니다.');
 
-        const exUser = await Owner.findOne({where: { owner_id: owner_id }});
-        if (!exUser) {
+        const user = await Owner.findOne({where: { owner_id: owner_id }});
+        if (!user) {
             return res.status(409).json('가입되지 않은 회원입니다.');
         }
-        const hashedOldPassword = await bcrypt.hash(oldPassword, 12);
+
         const hashedNewPassword = await bcrypt.hash(newPassword, 12);
 
-        if (hashedOldPassword !== exUser.owner_password) {
-            return res.status(409).json('기존 비밀번호가 일치하지 않습니다.');
-        } else {
-            await Owner.update({
-                owner_password: hashedNewPassword,
-            }, {
-                where: {owner_id: owner_id}
-            });
-            res.status(200).json('비밀번호가 성공적으로 변경되었습니다.');
-        }
+        bcrypt.compare(req.body.oldPassword, user.owner_password, async (error, result) => {
+            if (error) {
+                res.status(500).send('Internal Server Error');
+            }
 
+            if (result) {
+                await Owner.update({
+                    owner_password: hashedNewPassword,
+                }, {
+                    where: {owner_id: owner_id}
+                });
+                res.status(200).json('비밀번호가 성공적으로 변경되었습니다.');
+            } else {
+                console.log('result', result);
+                res.status(401).json('기존 비밀번호가 올바르지 않습니다.');
+            }
+        });
     } catch (error) {
-
+        console.log(error);
+        res.status(500).json('Internal Server Error');
     }
 })
 
