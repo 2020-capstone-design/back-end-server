@@ -7,7 +7,6 @@ const Owner = require('../models/owner');
 const newToken = user => {
     const payload = {
         username: user.username,
-        _id: user._id,
     };
     return jwt.sign(payload, SECRET_KEY, {
         expiresIn: EXPIRATION_DATE,
@@ -29,25 +28,13 @@ const authenticateUser = async (req, res, next) => {
     }
 
     const token = req.headers.authorization;
-    let payload;
     try {
-        payload = await verifyToken(token);
+        await verifyToken(token);
     } catch (e) {
         return res.status(401).json({ message: 'token is invalid' });
     }
 
-    const user = await Owner.findById(payload._id)
-        .select('-password')
-        .lean()
-        .exec();
-
-    if (!user) {
-        return res.status(401).json({ message: 'user is not found' });
-    }
-
-    req.user = user;
     next();
 };
 
 module.exports = { newToken, authenticateUser, verifyToken };
-

@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const AWS = require('aws-sdk');
 const multerS3 = require('multer-s3');
+const { authenticateUser } = require('../../utils/auth.js');
 
 // fs.readdir('uploads', (error) => {
 //     if (error) {
@@ -111,7 +112,7 @@ router.get('/list_recommended_restaurants/:restaurant_university&:hashtag', asyn
     }
 })
 
-router.post('/insert_restaurant', upload.fields([{name: 'restaurant_logo'}, {name: 'restaurant_outside_image'},
+router.post('/insert_restaurant', authenticateUser, upload.fields([{name: 'restaurant_logo'}, {name: 'restaurant_outside_image'},
     {name: 'restaurant_menu_image1'}, {name: 'restaurant_menu_image2'}]), async (req, res, next) => {
     try{
         console.log(req.body);
@@ -158,7 +159,7 @@ router.post('/insert_restaurant', upload.fields([{name: 'restaurant_logo'}, {nam
     }
 });
 
-router.put('/update_restaurant/:restaurant_num', async(req, res, next) => {
+router.put('/update_restaurant/:restaurant_num', authenticateUser, async(req, res, next) => {
     try {
         await Restaurant.update({
             restaurant_name : req.body.restaurant_name,
@@ -182,7 +183,7 @@ router.put('/update_restaurant/:restaurant_num', async(req, res, next) => {
     }
 })
 
-router.patch('/update_restaurant_isOpen', async (req, res, next) => {
+router.patch('/update_restaurant_isOpen', authenticateUser, async (req, res, next) => {
     try {
         console.log(req.body);
         await Restaurant.update({
@@ -198,12 +199,12 @@ router.patch('/update_restaurant_isOpen', async (req, res, next) => {
     }
 });
 
-router.patch('/update_restaurant_logo', upload.single('logo'), async (req, res, next) => {
+router.patch('/update_restaurant_logo', authenticateUser, upload.single('logo'), async (req, res, next) => {
     try {
         console.log(req.file, req.body.restaurant_num);
         let logo;
         if (req.file !== undefined) {
-            logo = '/img/' + req.file.filename;
+            logo = req.file.location;
         } else {
             logo = 'noImage'
         }
@@ -219,12 +220,12 @@ router.patch('/update_restaurant_logo', upload.single('logo'), async (req, res, 
     }
 })
 
-router.patch('/update_restaurant_outside_image', upload.single('outside_image'), async(req, res) => {
+router.patch('/update_restaurant_outside_image', authenticateUser, upload.single('outside_image'), async(req, res) => {
     try {
         console.log(req.file, req.body.restaurant_num);
         let outside_image;
         if (req.file !== undefined) {
-            outside_image = '/img/' + req.file.filename;
+            outside_image = req.file.location;
         } else {
             outside_image = 'noImage'
         }
@@ -240,12 +241,12 @@ router.patch('/update_restaurant_outside_image', upload.single('outside_image'),
     }
 })
 
-router.patch('/update_restaurant_menu_image1', upload.single('menu_image1'), async (req, res) => {
+router.patch('/update_restaurant_menu_image1', authenticateUser, upload.single('menu_image1'), async (req, res) => {
     try {
         console.log(req.file, req.body.restaurant_num);
         let menu_image1;
         if (req.file !== undefined) {
-            menu_image1 = '/img/' + req.file.filename;
+            menu_image1 = req.file.location;
         } else {
             menu_image1 = 'noImage'
         }
@@ -261,12 +262,12 @@ router.patch('/update_restaurant_menu_image1', upload.single('menu_image1'), asy
     }
 })
 
-router.patch('/update_restaurant_menu_image2', upload.single('menu_image2'), async (req, res) => {
+router.patch('/update_restaurant_menu_image2', authenticateUser, upload.single('menu_image2'), async (req, res) => {
     try {
         console.log(req.file, req.body.restaurant_num);
         let menu_image2;
         if (req.file !== undefined) {
-            menu_image2 = '/img/' + req.file.filename;
+            menu_image2 = req.file.location;
         } else {
             menu_image2 = 'noImage'
         }
@@ -282,7 +283,7 @@ router.patch('/update_restaurant_menu_image2', upload.single('menu_image2'), asy
     }
 })
 
-router.delete('/delete_restaurant/:restaurant_num', async (req, res, next) => {
+router.delete('/delete_restaurant/:restaurant_num', authenticateUser, async (req, res, next) => {
     try {
         console.log(req.params.restaurant_num);
         await Restaurant.destroy({
