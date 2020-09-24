@@ -5,23 +5,29 @@ const { Op } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const AWS = require('aws-sdk');
+const multerS3 = require('multer-s3');
 
-fs.readdir('uploads', (error) => {
-    if (error) {
-        console.log('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
-        fs.mkdirSync('uploads');
-    }
+// fs.readdir('uploads', (error) => {
+//     if (error) {
+//         console.log('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
+//         fs.mkdirSync('uploads');
+//     }
+// });
+
+AWS.config.update({
+    accessKeyId: process.env.S3_ACCESS_KEY_ID,
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+    region: 'ap-northeast-2',
 });
 
+
 const upload = multer({
-    storage: multer.diskStorage({
-        destination(req, file, done) {
-            done(null, 'uploads/');
-        },
-        filename(req, file, done) {
-            const ext = path.extname(file.originalname);
-            done(null, path.basename(file.originalname, ext) + Date.now() + ext);
-            console.log();
+    storage: multerS3({
+        s3: new AWS.S3(),
+        bucket: 'todaymenu',
+        key(req, file, cb) {
+            cb(null, `original/${Date.now()}${path.basename(file.originalname)}`);
         },
     }),
     limits: {fileSize: 3 * 1024 * 1024},
@@ -93,6 +99,7 @@ router.get('/list_recommended_restaurants/:restaurant_university&:hashtag', asyn
             where: {
                 restaurant_university: req.params.restaurant_university,
             },
+            order: [['restaurant_isOpen', 'DESC']],
         })
         res.status(200).json({
             result
@@ -104,8 +111,8 @@ router.get('/list_recommended_restaurants/:restaurant_university&:hashtag', asyn
     }
 })
 
-router.post('/insert_restaurant', upload.fields([{name: 'restaurant_logo'}, {name: 'restaurant_outside_image'}, {name: 'restaurant_menu_image1'},
-    {name: 'restaurant_menu_image2'}]), async (req, res, next) => {
+router.post('/insert_restaurant', upload.fields([{name: 'restaurant_logo'}, {name: 'restaurant_outside_image'},
+    {name: 'restaurant_menu_image1'}, {name: 'restaurant_menu_image2'}]), async (req, res, next) => {
     try{
         console.log(req.body);
         let logo, outside_image, menu_image1, menu_image2;
@@ -113,37 +120,17 @@ router.post('/insert_restaurant', upload.fields([{name: 'restaurant_logo'}, {nam
             return res.status(401).json('필수 입력사항을 입력하세요.');
         }
 
-        try{
-            if (req.files['restaurant_logo'][0] !== undefined) {
-                logo = '/img/' + req.files['restaurant_logo'][0].filename;
-                console.log(logo);
-            }
-        } catch (error) {
-            logo = 'noImage';
+        if (req.files['restaurant_logo'] !== undefined) {
+            logo =  req.files['restaurant_logo'][0].location;
         }
-        try {
-            if (req.files['restaurant_outside_image'][0] !== undefined) {
-                outside_image = '/img/' + req.files['restaurant_outside_image'][0].filename;
-                console.log(outside_image);
-            }
-        } catch (error) {
-            outside_image = 'noImage';
+        if (req.files['restaurant_outside_image'] !== undefined) {
+            outside_image = req.files['restaurant_outside_image'][0].location;
         }
-        try{
-            if (req.files['restaurant_menu_image1'][0] !== undefined) {
-                menu_image1 = '/img/' + req.files['restaurant_menu_image1'][0].filename;
-                console.log(menu_image1);
-            }
-        } catch (error) {
-            menu_image1 = 'noImage';
+        if (req.files['restaurant_menu_image1'] !== undefined) {
+            menu_image1 = req.files['restaurant_menu_image1'][0].location;
         }
-        try{
-            if (req.files['restaurant_menu_image2'][0] !== undefined) {
-                menu_image2 = '/img/' + req.files['restaurant_menu_image2'][0].filename;
-                console.log(menu_image2);
-            }
-        } catch (error) {
-            menu_image2 = 'noImage';
+        if (req.files['restaurant_menu_image2'] !== undefined) {
+            menu_image2 = req.files['restaurant_menu_image2'][0].location;
         }
 
         await Restaurant.create({
