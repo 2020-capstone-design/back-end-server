@@ -41,6 +41,7 @@ router.post('/login', (req, res, next) => {
         })
         .catch(error => {
             console.error(error);
+            res.status(500).json('Internal Server Error');
             next(error);
         });
 });
