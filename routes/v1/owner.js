@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const { authenticateUser } = require('../../utils/auth.js');
+
 
 const {Owner} = require('../../models');
 
@@ -9,16 +11,64 @@ router.get('/owner_info/:id', (req, res, next) => {
         where: {owner_id: req.params.id},
     })
         .then(user => {
-            res.json({ user });
+            res.status(200).json({ user });
         })
         .catch(error => {
             console.error(error);
-            res.status(500).message('Internal Server Error');
+            res.status(500).json('Internal Server Error');
             next(error);
         })
 });
 
-router.patch('/update_owner_info', async (req, res, next) => {
+router.post('/get_owner_id', (req, res) => {
+
+    if (req.body.owner_name === '' || req.body.owner_phone === '') {
+        return res.status(400).json('올바르지 않은 형식입니다.');
+    }
+
+    Owner.findOne({
+        attributes: ['owner_id'],
+        where: {owner_id: req.body.owner_name, owner_phone: req.body.owner_phone},
+    })
+        .then(ownerId => {
+            res.status(200).json({ ownerId })
+        })
+        .catch(error => {
+            console.error(error);
+            res.status(500).json('Internal Server Error');
+        })
+});
+
+router.patch('/update_random_password', async (req, res) => {
+
+    try {
+        const { owner_id } = req.body;
+        if (owner_id === '') {
+            return res.status(400).json('올바르지 않은 형식입니다.');
+        }
+        const randomString = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+        const randomNum = Math.floor(Math.random() * 10000) + 1
+        const specialCharacters = "!\$%&/()=?";
+        const randomSC =  specialCharacters.substr(Math.floor(specialCharacters.length*Math.random()), 1);
+        const randomPassword = randomSC + randomNum + randomString;
+
+        console.log(randomPassword);
+        const user = await Owner.findOne({ where: {owner_id: owner_id}});
+        if(!user) {
+            return res.status(401).send('입력하신 아이디에 대한 정보가 없습니다.');
+        } else {
+            const randomHashedPassword = await bcrypt.hash(randomPassword, 12);
+            await Owner.update({owner_password: randomHashedPassword,}, {where: {owner_id: owner_id}});
+        }
+        res.status(200).json(randomPassword);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+    }
+
+})
+
+router.patch('/update_owner_info', authenticateUser, async (req, res, next) => {
     try {
         await Owner.update({
             owner_name: req.body.name,
@@ -35,11 +85,11 @@ router.patch('/update_owner_info', async (req, res, next) => {
     }
 })
 
-router.patch('/update_owner_password', async (req, res, next) => {
+router.patch('/update_owner_password', authenticateUser, async (req, res, next) => {
     try {
         const {owner_id, oldPassword, newPassword} = req.body;
         if(owner_id === '' || oldPassword === '' || newPassword === '')
-            return res.status(401).json('올바르지 않은 형식입니다.');
+            return res.status(400).json('올바르지 않은 형식입니다.');
 
         const user = await Owner.findOne({where: { owner_id: owner_id }});
         if (!user) {
@@ -71,7 +121,7 @@ router.patch('/update_owner_password', async (req, res, next) => {
     }
 })
 
-router.delete('/delete_owner/:id', async (req, res, next) => {
+router.delete('/delete_owner/:id', authenticateUser, async (req, res, next) => {
 
     console.log(req.params.id);
     try {
@@ -80,10 +130,10 @@ router.delete('/delete_owner/:id', async (req, res, next) => {
             return res.status(409).send('해당 아이디가 없습니다.');
         }
         await Owner.destroy({where: {owner_id: req.params.id}});
-        res.status(200).send('해당 계정이 삭제되었습니다.');
+        res.status(200).json('해당 계정이 삭제되었습니다.');
     } catch (error) {
         console.error(error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json('Internal Server Error');
         next(error);
     }
 });
