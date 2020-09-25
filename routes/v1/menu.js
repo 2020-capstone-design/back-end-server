@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { Menu } = require('../../models');
+const { authenticateUser } = require('../../utils/auth.js');
 
-router.post('/insert_menu', async (req, res, next) => {
+
+router.post('/insert_menu', authenticateUser, async (req, res, next) => {
     try {
-        console.log(req.body);
         await Menu.create({
             menu_name: req.body.menu_name,
             menu_category: req.body.menu_category,
@@ -23,7 +24,6 @@ router.post('/insert_menu', async (req, res, next) => {
 
 router.get('/list_menus/:restaurant_num', async (req, res, next) => {
     try{
-        console.log(req.params.restaurant_num);
         const menus = await Menu.findAll({
             where: {
                 fk_restaurant_num: req.params.restaurant_num,
@@ -41,7 +41,6 @@ router.get('/list_menus/:restaurant_num', async (req, res, next) => {
 
 router.get('/list_menu/:menu_num', async (req, res, next) => {
     try {
-        console.log(req.params.menu_num);
         const menu = await Menu.findOne({
             where: {
                 menu_num: req.params.menu_num,
@@ -57,10 +56,9 @@ router.get('/list_menu/:menu_num', async (req, res, next) => {
     }
 })
 
-router.put('/update_menu', async (req, res) => {
+router.put('/update_menu', authenticateUser, async (req, res) => {
     try {
         const {menuNum, newMenuName, newMenuCategory, newMenuIntro, newMenuPrice} = req.body;
-        console.log(menuNum, newMenuName);
         await Menu.update({
             menu_name: newMenuName,
             menu_category: newMenuCategory,
@@ -78,9 +76,8 @@ router.put('/update_menu', async (req, res) => {
     }
 })
 
-router.delete('/delete_menu/:menu_num', async (req, res, next) => {
+router.delete('/delete_menu/:menu_num', authenticateUser, async (req, res, next) => {
     try {
-        console.log(req.params.menu_num);
         await Menu.destroy({
             where: { menu_num: req.params.menu_num }
         })
