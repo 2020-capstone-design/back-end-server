@@ -25,7 +25,6 @@ sequelize.sync({ force: false})
       console.error(err);
     });
 
-// view engine setup
 app.set('port', process.env.PORT || 3000);
 
 if(process.env.NODE_ENV === 'production') {
@@ -51,7 +50,7 @@ app.use('/v1/owner', ownerRouter);
 
 //rendering test
 app.get('/', (req, res) => {
-    res.send('Hello, Express');
+    res.send('백엔드 테스트 성공');
 });
 
 // catch 404 and forward to error handler
