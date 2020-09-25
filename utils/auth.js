@@ -1,8 +1,5 @@
-// json related
 const jwt = require ('jsonwebtoken');
 const { SECRET_KEY, EXPIRATION_DATE } = require ('../config/index');
-// modules
-const Owner = require('../models/owner');
 
 const newToken = user => {
     const payload = {
@@ -21,7 +18,6 @@ const verifyToken = token =>
         });
     });
 
-// middleware
 const authenticateUser = async (req, res, next) => {
     if (!req.headers.authorization) {
         return res.status(401).json({ message: 'token must be included' });
@@ -30,7 +26,7 @@ const authenticateUser = async (req, res, next) => {
     const token = req.headers.authorization;
     try {
         await verifyToken(token);
-    } catch (e) {
+    } catch (error) {
         return res.status(401).json({ message: 'token is invalid' });
     }
 
