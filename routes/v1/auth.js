@@ -46,12 +46,12 @@ router.post('/login', (req, res, next) => {
         });
 });
 
-router.post('/signup',async (req, res, next) => {
+router.post('/signup',async (req, res) => {
 
     try {
         const { owner_id, password, name, birthday, phonenumber } = req.body;
         if(owner_id === '' || password === '' || name === '')
-            return res.status(401).json('올바르지 않은 형식입니다.');
+            return res.status(400).json('올바르지 않은 형식입니다.');
 
         const exUser = await Owner.findOne({where: { owner_id: owner_id }});
         if (exUser) {
@@ -73,5 +73,17 @@ router.post('/signup',async (req, res, next) => {
         );
     }
 });
+
+router.post('/set_random_password', async (req, res, next) => {
+    try {
+        const owner_id  = req.body;
+        if (owner_id === '') {
+            return res.status(400).json('올바르지 않은 형식입니다.');
+
+        }
+    } catch (error) {
+
+    }
+})
 
 module.exports = router;
