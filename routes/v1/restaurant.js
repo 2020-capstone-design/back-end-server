@@ -4,17 +4,9 @@ const { Restaurant, Menu } = require('../../models');
 const { Op } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const AWS = require('aws-sdk');
 const multerS3 = require('multer-s3');
 const { authenticateUser } = require('../../utils/auth.js');
-
-// fs.readdir('uploads', (error) => {
-//     if (error) {
-//         console.log('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
-//         fs.mkdirSync('uploads');
-//     }
-// });
 
 AWS.config.update({
     accessKeyId: process.env.S3_ACCESS_KEY_ID,
@@ -36,7 +28,6 @@ const upload = multer({
 
 router.get('/list_restaurants/:restaurant_university&:restaurant_category', async (req, res, next) => {
     try {
-        //console.log(req.params.restaurant_university);
         const restaurants = await Restaurant.findAll( {
             where: {
                 restaurant_university: req.params.restaurant_university,
@@ -44,7 +35,6 @@ router.get('/list_restaurants/:restaurant_university&:restaurant_category', asyn
             },
             order: [['restaurant_isOpen', 'DESC']],
         });
-        console.log(req.params.restaurant_university, req.params.restaurant_category);
         res.status(200).json({
             restaurants
         });
@@ -71,7 +61,6 @@ router.get('/list_restaurant/:restaurant_num', async (req, res, next) => {
 });
 
 router.get('/list_restaurants/:username', async (req, res, next) => {
-    console.log('username:', req.params.username);
     try {
         const restaurants = await Restaurant.findAll({
             where: {
@@ -89,7 +78,6 @@ router.get('/list_restaurants/:username', async (req, res, next) => {
 });
 
 router.get('/list_recommended_restaurants/:restaurant_university&:hashtag', async (req, res, next) => {
-    console.log(req.params.restaurant_university, req.params.hashtag)
     const hashtag = req.params.hashtag;
     try{
         const result = await Restaurant.findAll({
@@ -118,7 +106,7 @@ router.post('/insert_restaurant', authenticateUser, upload.fields([{name: 'resta
         console.log(req.body);
         let logo, outside_image, menu_image1, menu_image2;
         if(req.body.restaurant_name === '' || req.body.restaurant_university === '' || req.body.restaurant_category === '') {
-            return res.status(401).json('필수 입력사항을 입력하세요.');
+            return res.status(400).json('필수 입력사항을 입력하세요.');
         }
 
         if (req.files['restaurant_logo'] !== undefined) {
@@ -181,11 +169,10 @@ router.put('/update_restaurant/:restaurant_num', authenticateUser, async(req, re
         console.error(error);
         next(error);
     }
-})
+});
 
 router.patch('/update_restaurant_isOpen', authenticateUser, async (req, res, next) => {
     try {
-        console.log(req.body);
         await Restaurant.update({
             restaurant_isOpen: req.body.isOpen
         }, {
@@ -201,7 +188,6 @@ router.patch('/update_restaurant_isOpen', authenticateUser, async (req, res, nex
 
 router.patch('/update_restaurant_logo', authenticateUser, upload.single('logo'), async (req, res, next) => {
     try {
-        console.log(req.file, req.body.restaurant_num);
         let logo;
         if (req.file !== undefined) {
             logo = req.file.location;
@@ -218,11 +204,10 @@ router.patch('/update_restaurant_logo', authenticateUser, upload.single('logo'),
         console.error(error);
         res.status(500).json('Internal Server Error');
     }
-})
+});
 
 router.patch('/update_restaurant_outside_image', authenticateUser, upload.single('outside_image'), async(req, res) => {
     try {
-        console.log(req.file, req.body.restaurant_num);
         let outside_image;
         if (req.file !== undefined) {
             outside_image = req.file.location;
@@ -239,11 +224,10 @@ router.patch('/update_restaurant_outside_image', authenticateUser, upload.single
         console.error(error);
         res.status(500).json('Internal Server Error');
     }
-})
+});
 
 router.patch('/update_restaurant_menu_image1', authenticateUser, upload.single('menu_image1'), async (req, res) => {
     try {
-        console.log(req.file, req.body.restaurant_num);
         let menu_image1;
         if (req.file !== undefined) {
             menu_image1 = req.file.location;
@@ -260,11 +244,10 @@ router.patch('/update_restaurant_menu_image1', authenticateUser, upload.single('
         console.error(error);
         res.status(500).json('Internal Server Error');
     }
-})
+});
 
 router.patch('/update_restaurant_menu_image2', authenticateUser, upload.single('menu_image2'), async (req, res) => {
     try {
-        console.log(req.file, req.body.restaurant_num);
         let menu_image2;
         if (req.file !== undefined) {
             menu_image2 = req.file.location;
@@ -281,11 +264,10 @@ router.patch('/update_restaurant_menu_image2', authenticateUser, upload.single('
         console.error(error);
         res.status(500).json('Internal Server Error');
     }
-})
+});
 
 router.delete('/delete_restaurant/:restaurant_num', authenticateUser, async (req, res, next) => {
     try {
-        console.log(req.params.restaurant_num);
         await Restaurant.destroy({
             where: { restaurant_num: req.params.restaurant_num }
         })
@@ -294,7 +276,7 @@ router.delete('/delete_restaurant/:restaurant_num', authenticateUser, async (req
         console.error(error);
         next(error);
     }
-})
+});
 
 module.exports = router;
 
