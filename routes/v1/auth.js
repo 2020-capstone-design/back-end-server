@@ -74,16 +74,4 @@ router.post('/signup',async (req, res) => {
     }
 });
 
-router.post('/set_random_password', async (req, res, next) => {
-    try {
-        const owner_id  = req.body;
-        if (owner_id === '') {
-            return res.status(400).json('올바르지 않은 형식입니다.');
-
-        }
-    } catch (error) {
-
-    }
-})
-
 module.exports = router;
