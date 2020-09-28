@@ -12,6 +12,10 @@ module.exports = class Owner extends Sequelize.Model {
                 type: Sequelize.STRING(100),
                 allowNull: false,
             },
+            owner_email: {
+                type: Sequelize.STRING(50),
+                allowNull: false,
+            },
             owner_name: {
                 type: Sequelize.STRING(20),
                 allowNull: false,
@@ -22,7 +26,7 @@ module.exports = class Owner extends Sequelize.Model {
             },
             owner_phone: {
                 type: Sequelize.STRING(20),
-                allowNull: true,
+                allowNull: false,
             },
         }, {
             sequelize,
