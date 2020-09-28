@@ -4,7 +4,7 @@ const { Menu } = require('../../models');
 const { authenticateUser } = require('../../utils/auth.js');
 
 
-router.post('/insert_menu', authenticateUser, async (req, res, next) => {
+router.post('/insert_menu', authenticateUser, async (req, res) => {
     try {
         await Menu.create({
             menu_name: req.body.menu_name,
@@ -17,12 +17,11 @@ router.post('/insert_menu', authenticateUser, async (req, res, next) => {
     } catch (error) {
         console.error(error);
         res.status(500).json('Internal Server Error');
-        next(error);
     }
 
 });
 
-router.get('/list_menus/:restaurant_num', async (req, res, next) => {
+router.get('/list_menus/:restaurant_num', async (req, res) => {
     try{
         const menus = await Menu.findAll({
             where: {
@@ -35,7 +34,7 @@ router.get('/list_menus/:restaurant_num', async (req, res, next) => {
         });
     } catch (error) {
         console.error(error);
-        next(error);
+        res.status(500).json('Internal Server Error');
     }
 });
 
@@ -52,7 +51,6 @@ router.get('/list_menu/:menu_num', async (req, res, next) => {
     } catch (error) {
         console.error(error);
         res.status(500).json('Internal Server Error');
-        next(error);
     }
 })
 
@@ -76,7 +74,7 @@ router.put('/update_menu', authenticateUser, async (req, res) => {
     }
 })
 
-router.delete('/delete_menu/:menu_num', authenticateUser, async (req, res, next) => {
+router.delete('/delete_menu/:menu_num', authenticateUser, async (req, res) => {
     try {
         await Menu.destroy({
             where: { menu_num: req.params.menu_num }
@@ -85,7 +83,6 @@ router.delete('/delete_menu/:menu_num', authenticateUser, async (req, res, next)
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error!');
-        next(error);
     }
 })
 
