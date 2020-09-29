@@ -8,10 +8,10 @@ const helmet = require('helmet');
 const hpp = require('hpp');
 require('dotenv').config();
 
-const restaurantRouter = require('./routes/v1/restaurant');
-const menuRouter = require('./routes/v1/menu');
-const authRouter = require('./routes/v1/auth');
-const ownerRouter = require('./routes/v1/owner');
+const restaurantRouter = require('./routes/restaurant');
+const menuRouter = require('./routes/menu');
+const authRouter = require('./routes/auth');
+const ownerRouter = require('./routes/owner');
 const { sequelize } = require('./models');
 const logger = require('./logger');
 
@@ -41,29 +41,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/img', express.static(path.join(__dirname, 'uploads')));
 
-app.use('/v1/restaurant', restaurantRouter);
-app.use('/v1/menu', menuRouter);
-app.use('/v1/auth', authRouter)
-app.use('/v1/owner', ownerRouter);
+app.use('/restaurant', restaurantRouter);
+app.use('/menu', menuRouter);
+app.use('/auth', authRouter)
+app.use('/owner', ownerRouter);
 
-//rendering test
-app.get('/', (req, res) => {
-    res.send('백엔드 테스트 성공');
-});
-
-// catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
 app.use(function(err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  return res.status(err.status || 500).json(res.locals.error);
+  return res.status(err.status || 500).json(err.message);
 });
 
 app.listen(app.get('port'), 3000, () => {
