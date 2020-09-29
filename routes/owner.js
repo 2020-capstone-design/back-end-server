@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const { authenticateUser } = require('../../utils/auth.js');
+const { authenticateUser } = require('../utils/auth.js');
 
 
-const {Owner} = require('../../models');
+const {Owner} = require('../models');
 
 router.get('/owner_info/:id', (req, res) => {
     Owner.findOne({
@@ -36,7 +36,7 @@ router.patch('/update_owner_info', authenticateUser, async (req, res) => {
     }
 })
 
-router.patch('/update_owner_password', authenticateUser, async (req, res, next) => {
+router.patch('/update_owner_password', authenticateUser, async (req, res) => {
     try {
         const {owner_id, oldPassword, newPassword} = req.body;
         if(owner_id === '' || oldPassword === '' || newPassword === '')
