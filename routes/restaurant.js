@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { Restaurant, Menu } = require('../../models');
-const { Op } = require('sequelize');
+const {Restaurant, Menu} = require('../models');
+const {Op} = require('sequelize');
 const multer = require('multer');
 const path = require('path');
 const AWS = require('aws-sdk');
 const multerS3 = require('multer-s3');
-const { authenticateUser } = require('../../utils/auth.js');
+const {authenticateUser} = require('../utils/auth.js');
 
 AWS.config.update({
     accessKeyId: process.env.S3_ACCESS_KEY_ID,
@@ -26,9 +26,9 @@ const upload = multer({
     limits: {fileSize: 3 * 1024 * 1024},
 });
 
-router.get('/list_restaurants/:restaurant_university&:restaurant_category', async (req, res, next) => {
+router.get('/list_restaurants/:restaurant_university&:restaurant_category', async (req, res) => {
     try {
-        const restaurants = await Restaurant.findAll( {
+        const restaurants = await Restaurant.findAll({
             where: {
                 restaurant_university: req.params.restaurant_university,
                 restaurant_category: req.params.restaurant_category,
@@ -40,11 +40,11 @@ router.get('/list_restaurants/:restaurant_university&:restaurant_category', asyn
         });
     } catch (error) {
         console.log(error);
-        next(error);
+        res.status(500).json('Internal Server Error');
     }
 });
 
-router.get('/list_restaurant/:restaurant_num', async (req, res, next) => {
+router.get('/list_restaurant/:restaurant_num', async (req, res) => {
     try {
         const restaurant = await Restaurant.findOne({
             where: {
@@ -56,11 +56,11 @@ router.get('/list_restaurant/:restaurant_num', async (req, res, next) => {
         });
     } catch (error) {
         console.log(error);
-        next(error);
-   }
+        res.status(500).json('Internal Server Error');
+    }
 });
 
-router.get('/list_restaurants/:username', async (req, res, next) => {
+router.get('/list_restaurants/:username', async (req, res) => {
     try {
         const restaurants = await Restaurant.findAll({
             where: {
@@ -72,18 +72,17 @@ router.get('/list_restaurants/:username', async (req, res, next) => {
             restaurants
         });
     } catch (error) {
-        console.log(error);
-        next(error);
+        console.log(error);;
     }
 });
 
-router.get('/list_recommended_restaurants/:restaurant_university&:hashtag', async (req, res, next) => {
+router.get('/list_recommended_restaurants/:restaurant_university&:hashtag', async (req, res) => {
     const hashtag = req.params.hashtag;
-    try{
+    try {
         const result = await Restaurant.findAll({
             include: [{
-              model: Menu,
-              where: {menu_name: {[Op.like]: '%' + hashtag + '%'}},
+                model: Menu,
+                where: {menu_name: {[Op.like]: '%' + hashtag + '%'}},
             }],
             where: {
                 restaurant_university: req.params.restaurant_university,
@@ -96,21 +95,20 @@ router.get('/list_recommended_restaurants/:restaurant_university&:hashtag', asyn
     } catch (error) {
         console.error(error);
         res.status(500).message('Internal Server Error');
-        next(error);
     }
 })
 
 router.post('/insert_restaurant', authenticateUser, upload.fields([{name: 'restaurant_logo'}, {name: 'restaurant_outside_image'},
-    {name: 'restaurant_menu_image1'}, {name: 'restaurant_menu_image2'}]), async (req, res, next) => {
-    try{
+    {name: 'restaurant_menu_image1'}, {name: 'restaurant_menu_image2'}]), async (req, res) => {
+    try {
         console.log(req.body);
         let logo, outside_image, menu_image1, menu_image2;
-        if(req.body.restaurant_name === '' || req.body.restaurant_university === '' || req.body.restaurant_category === '') {
+        if (req.body.restaurant_name === '' || req.body.restaurant_university === '' || req.body.restaurant_category === '') {
             return res.status(400).json('필수 입력사항을 입력하세요.');
         }
 
         if (req.files['restaurant_logo'] !== undefined) {
-            logo =  req.files['restaurant_logo'][0].location;
+            logo = req.files['restaurant_logo'][0].location;
         }
         if (req.files['restaurant_outside_image'] !== undefined) {
             outside_image = req.files['restaurant_outside_image'][0].location;
@@ -123,43 +121,42 @@ router.post('/insert_restaurant', authenticateUser, upload.fields([{name: 'resta
         }
 
         await Restaurant.create({
-            restaurant_name : req.body.restaurant_name,
-            restaurant_phone : req.body.restaurant_phone,
-            restaurant_loc : req.body.restaurant_loc,
-            restaurant_university : req.body.restaurant_university,
-            restaurant_intro : req.body.restaurant_intro,
-            restaurant_category : req.body.restaurant_category,
-            restaurant_logo : logo,
-            restaurant_outside_image : outside_image,
+            restaurant_name: req.body.restaurant_name,
+            restaurant_phone: req.body.restaurant_phone,
+            restaurant_loc: req.body.restaurant_loc,
+            restaurant_university: req.body.restaurant_university,
+            restaurant_intro: req.body.restaurant_intro,
+            restaurant_category: req.body.restaurant_category,
+            restaurant_logo: logo,
+            restaurant_outside_image: outside_image,
             restaurant_menu_image1: menu_image1,
             restaurant_menu_image2: menu_image2,
-            restaurant_main_menu : req.body.restaurant_main_menu,
-            restaurant_operating_time : req.body.restaurant_operating_time,
-            restaurant_closed_days : req.body.restaurant_closed_days,
-            restaurant_food_origin : req.body.restaurant_food_origin,
-            fk_owner_id : req.body.fk_owner_id,
+            restaurant_main_menu: req.body.restaurant_main_menu,
+            restaurant_operating_time: req.body.restaurant_operating_time,
+            restaurant_closed_days: req.body.restaurant_closed_days,
+            restaurant_food_origin: req.body.restaurant_food_origin,
+            fk_owner_id: req.body.fk_owner_id,
         })
         res.status(200).send('success!');
     } catch (error) {
         console.log(error);
         res.status(500).json('Internal Server Error');
-        next(error);
     }
 });
 
-router.put('/update_restaurant/:restaurant_num', authenticateUser, async(req, res, next) => {
+router.put('/update_restaurant/:restaurant_num', authenticateUser, async (req, res) => {
     try {
         await Restaurant.update({
-            restaurant_name : req.body.restaurant_name,
-            restaurant_phone : req.body.restaurant_phone,
-            restaurant_loc : req.body.restaurant_loc,
-            restaurant_university : req.body.restaurant_university,
-            restaurant_intro : req.body.restaurant_intro,
-            restaurant_category : req.body.restaurant_category,
-            restaurant_main_menu : req.body.restaurant_main_menu,
-            restaurant_operating_time : req.body.restaurant_operating_time,
-            restaurant_closed_days : req.body.restaurant_closed_days,
-            restaurant_food_origin : req.body.restaurant_food_origin,
+            restaurant_name: req.body.restaurant_name,
+            restaurant_phone: req.body.restaurant_phone,
+            restaurant_loc: req.body.restaurant_loc,
+            restaurant_university: req.body.restaurant_university,
+            restaurant_intro: req.body.restaurant_intro,
+            restaurant_category: req.body.restaurant_category,
+            restaurant_main_menu: req.body.restaurant_main_menu,
+            restaurant_operating_time: req.body.restaurant_operating_time,
+            restaurant_closed_days: req.body.restaurant_closed_days,
+            restaurant_food_origin: req.body.restaurant_food_origin,
             restaurant_break_time: req.body.restaurant_break_time,
         }, {
             where: {restaurant_num: req.params.restaurant_num}
@@ -167,11 +164,11 @@ router.put('/update_restaurant/:restaurant_num', authenticateUser, async(req, re
         res.status(200).send('성공적으로 수정하였습니다.');
     } catch (error) {
         console.error(error);
-        next(error);
+        res.status(500).json('Internal Server Error');
     }
 });
 
-router.patch('/update_restaurant_isOpen', authenticateUser, async (req, res, next) => {
+router.patch('/update_restaurant_isOpen', authenticateUser, async (req, res) => {
     try {
         await Restaurant.update({
             restaurant_isOpen: req.body.isOpen
@@ -182,11 +179,10 @@ router.patch('/update_restaurant_isOpen', authenticateUser, async (req, res, nex
     } catch (error) {
         console.error(error);
         res.status(500).json('Internal Server Error');
-        next(error);
     }
 });
 
-router.patch('/update_restaurant_logo', authenticateUser, upload.single('logo'), async (req, res, next) => {
+router.patch('/update_restaurant_logo', authenticateUser, upload.single('logo'), async (req, res) => {
     try {
         let logo;
         if (req.file !== undefined) {
@@ -197,7 +193,7 @@ router.patch('/update_restaurant_logo', authenticateUser, upload.single('logo'),
         await Restaurant.update({
             restaurant_logo: logo,
         }, {
-            where: { restaurant_num: req.body.restaurant_num }
+            where: {restaurant_num: req.body.restaurant_num}
         });
         res.status(200).json('Success!');
     } catch (error) {
@@ -206,7 +202,7 @@ router.patch('/update_restaurant_logo', authenticateUser, upload.single('logo'),
     }
 });
 
-router.patch('/update_restaurant_outside_image', authenticateUser, upload.single('outside_image'), async(req, res) => {
+router.patch('/update_restaurant_outside_image', authenticateUser, upload.single('outside_image'), async (req, res) => {
     try {
         let outside_image;
         if (req.file !== undefined) {
@@ -217,7 +213,7 @@ router.patch('/update_restaurant_outside_image', authenticateUser, upload.single
         await Restaurant.update({
             restaurant_outside_image: outside_image,
         }, {
-            where: { restaurant_num: req.body.restaurant_num }
+            where: {restaurant_num: req.body.restaurant_num}
         });
         res.status(200).json('Success!');
     } catch (error) {
@@ -237,7 +233,7 @@ router.patch('/update_restaurant_menu_image1', authenticateUser, upload.single('
         await Restaurant.update({
             restaurant_menu_image1: menu_image1,
         }, {
-            where: { restaurant_num: req.body.restaurant_num }
+            where: {restaurant_num: req.body.restaurant_num}
         });
         res.status(200).json('Success!');
     } catch (error) {
@@ -257,7 +253,7 @@ router.patch('/update_restaurant_menu_image2', authenticateUser, upload.single('
         await Restaurant.update({
             restaurant_menu_image2: menu_image2,
         }, {
-            where: { restaurant_num: req.body.restaurant_num }
+            where: {restaurant_num: req.body.restaurant_num}
         });
         res.status(200).json('Success!');
     } catch (error) {
@@ -266,15 +262,15 @@ router.patch('/update_restaurant_menu_image2', authenticateUser, upload.single('
     }
 });
 
-router.delete('/delete_restaurant/:restaurant_num', authenticateUser, async (req, res, next) => {
+router.delete('/delete_restaurant/:restaurant_num', authenticateUser, async (req, res) => {
     try {
         await Restaurant.destroy({
-            where: { restaurant_num: req.params.restaurant_num }
+            where: {restaurant_num: req.params.restaurant_num}
         })
         res.status(200).send('성공적으로 삭제하였습니다.')
     } catch (error) {
         console.error(error);
-        next(error);
+        res.status(500).json('Internal Server Error');
     }
 });
 
