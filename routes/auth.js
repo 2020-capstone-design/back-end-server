@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const { newToken } = require('../../utils/auth');
-const { Owner } = require('../../models');
+const { newToken } = require('../utils/auth');
+const { Owner } = require('../models');
 const nodemailer = require('nodemailer');
 
 const router = express.Router();
