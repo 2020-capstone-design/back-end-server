@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { Menu } = require('../../models');
-const { authenticateUser } = require('../../utils/auth.js');
+const { Menu } = require('../models');
+const { authenticateUser } = require('../utils/auth.js');
 
 
 router.post('/insert_menu', authenticateUser, async (req, res) => {
