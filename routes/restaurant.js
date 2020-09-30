@@ -135,6 +135,7 @@ router.post('/insert_restaurant', authenticateUser, upload.fields([{name: 'resta
             restaurant_operating_time: req.body.restaurant_operating_time,
             restaurant_closed_days: req.body.restaurant_closed_days,
             restaurant_food_origin: req.body.restaurant_food_origin,
+            restaurant_break_time: req.body.restaurant_break_time,
             fk_owner_id: req.body.fk_owner_id,
         })
         res.status(200).send('success!');
