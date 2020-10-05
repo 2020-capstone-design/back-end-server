@@ -78,9 +78,8 @@ router.get('/list_restaurants/:username', async (req, res) => {
 
 router.get('/list_recommended_restaurants/:restaurant_university&:hashtag', async (req, res) => {
     const hashtag = req.params.hashtag;
-    console.log(req.params);
     try {
-        const result1 = await Restaurant.findAll({
+        const resultByMenu = await Restaurant.findAll({
             include: [{
                 model: Menu,
                 where: {menu_name: {[Op.like]: '%' + hashtag + '%'}}
@@ -90,14 +89,14 @@ router.get('/list_recommended_restaurants/:restaurant_university&:hashtag', asyn
             },
             order: [['restaurant_isOpen', 'DESC']],
         })
-        const result2 = await Restaurant.findAll({
+        const resultByRestaurant = await Restaurant.findAll({
             where: {
                 restaurant_university: req.params.restaurant_university,
                 restaurant_name: {[Op.like]: '%' + hashtag + '%'},
             },
             order: [['restaurant_isOpen', 'DESC']],
         })
-        const result = Object.assign(result1, result2);
+        const result = Object.assign(resultByMenu, resultByRestaurant);
         res.status(200).json({
             result
         })
