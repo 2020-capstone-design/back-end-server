@@ -18,7 +18,7 @@
 
 # Sensitive or high-churn files
 .idea/**/dataSources/
-.idea/**/dataSources.ids
+.idea/**/dataSources.idsg
 .idea/**/dataSources.local.xml
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
@@ -287,6 +287,7 @@ dist
 # modules.xml
 # .idea/misc.xml
 # *.ipr
+# .idea/
 
 # Sonarlint plugin
 
