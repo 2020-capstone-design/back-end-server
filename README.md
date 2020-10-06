@@ -2,7 +2,10 @@
 
 > **UI 서버와 안드로이드에 API를 제공하는 서버**
 
-<img src="https://user-images.githubusercontent.com/49308628/94784978-ee0d5500-0409-11eb-9412-24acbe12cf33.png" alt="https://user-images.githubusercontent.com/49308628/94784978-ee0d5500-0409-11eb-9412-24acbe12cf33.png" style="zoom: 50%;" />
+<p align="center"><img src="https://user-images.githubusercontent.com/49308628/94784978-ee0d5500-0409-11eb-9412-24acbe12cf33.png" width="400px" height="300px" style="zoom:50%;" text-align="center" /></p>
+
+<p align="center"><img src="https://img.shields.io/badge/npm-6.14.8-red"/> <img src="https://img.shields.io/badge/node-12.16.2-yellowgreen"/> </p>
+
 
 ### '오늘 뭐먹지?' 서비스
 
@@ -17,21 +20,26 @@
 **APP** - 개발 진행 중
 
 ------
+[Front-end github](https://github.com/2020-capstone-design/front-end-server)
 
+------
 ## Features
 
-👉 **로그인, 회원가입, 아이디 및 비밀번호 찾기**
+👉 **회원가입, 로그인, 로그아웃 기능**
 
-- 회원 이메일로 데이터 전송 기능
+- jwt 사용 (로그인 시 토큰 생성 후 발급)
 
-👉 **회원 정보 수정, 탈퇴**
+👉 **아이디 찾기, 비밀번호 찾기 기능**
 
-👉 **가게 정보 등록, 가게 정보 수정, 가게 정보 삭제**
+- 가입 정보를 바탕으로 한 아이디 찾기 기능
+- 이메일로 임시 랜덤 비밀번호 전송 기능 ([https://www.npmjs.com/package/nodemailer](https://www.npmjs.com/package/nodemailer))
 
-- 카카오 우편번호 API 사용 (https://spi.maps.daum.net/postcode/guidessl)
-- 이미지 파일 Amazon S3에 저장 (https://aws.amazon.com/ko/s3/)
+👉 **가게 정보 등록, 가게 정보 수정, 가게 정보 삭제 기능**
 
-👉 **메뉴 정보 등록, 메뉴 정보 수정, 메뉴 정보 삭제**
+- 카카오 우편번호 API 사용 ([https://spi.maps.daum.net/postcode/guidessl](https://spi.maps.daum.net/postcode/guidessl))
+- 이미지 파일 Amazon S3에 저장 ([https://aws.amazon.com/ko/s3/](https://aws.amazon.com/ko/s3/))
+
+👉 **메뉴 정보 등록, 메뉴 정보 수정, 메뉴 정보 삭제 기능**
 
 👉 **정보 Create, Update, Delete 시 토큰 인증 필요**
 
@@ -84,7 +92,11 @@ After you clone this repo to your desktop, go to its root directory and run  **n
 Once the dependencies are installed, you can run npm start to start the application. You will then be able to access it at localhost:3000
 
 ------
+## Built With
 
+- [Node](https://nodejs.org/ko/)
+- [PostgrSQL](https://www.postgresql.org/)
+- [AWS S3](https://aws.amazon.com/ko/s3/)
 ------
 
 ## License
@@ -92,5 +104,3 @@ Once the dependencies are installed, you can run npm start to start the applicat
 > You can check out the full license **[here](https://github.com/2020-capstone-design/backend-server/blob/master/LICENSE)**
 
 This project is licensed under the terms of the **MIT** license.
-
-https://img.shields.io/github/license/2020-capstone-design/backend-server
