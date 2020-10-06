@@ -6,7 +6,7 @@
 
 <p align="center"><img src="https://user-images.githubusercontent.com/49308628/94784978-ee0d5500-0409-11eb-9412-24acbe12cf33.png" width="400px" height="300px" style="zoom:50%;" text-align="center" /></p>
 
-<p align="center"><img src="https://img.shields.io/badge/npm-6.14.8-red"/> <img src="https://img.shields.io/badge/node-12.16.2-yellowgreen"/> <img src="	https://img.shields.io/github/license/2020-capstone-design/back-end-server"/> </p>
+<p align="center"><img src="https://img.shields.io/badge/npm-6.14.8-red"/> <img src="https://img.shields.io/badge/node-12.16.2-yellowgreen"/> <img src="https://img.shields.io/badge/license-MIT-green"/> </p>
 
 ### '오늘 뭐먹지?' 서비스
 > 항상 오늘은 뭐 먹을 지 고민하는 대학생들을 위해 시작한 프로젝트입니다.
@@ -14,7 +14,7 @@
 > 대학교 주변에 어떤 음식점에 어떤 메뉴가 있는지 그리고 오늘의 메뉴 추천 기능 서비스를 제공합니다.
 >
 > 배달 관련 앱에 나오지 않는 식당들도 사용자가 식당 정보를 파악할 수 있습니다.
-
+----
 ### Domain
 
 **WEB -** https://owner.todaymenu.tk
