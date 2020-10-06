@@ -17,7 +17,7 @@
 ----
 ### Domain
 
-**WEB -** https://owner.todaymenu.tk
+**WEB** - https://owner.todaymenu.tk
 
 **API Server** - https://api.todaymenu.tk
 
@@ -91,7 +91,12 @@ Clone this repo to your desktop and run  **npm install**  to install all the dep
 
 ## Usage
 
-After you clone this repo to your desktop, go to its root directory and run  **npm install**  to install its dependencies.
+``` 
+git clone https://github.com/2020-capstone-design/back-end-server.git
+cd your-project-name
+npm install (npm i / yarn)
+npm start / node app
+```
 
 Once the dependencies are installed, you can run npm start to start the application. You will then be able to access it at localhost:3000
 
