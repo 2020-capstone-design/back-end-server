@@ -12,6 +12,7 @@ const restaurantRouter = require('./routes/restaurant');
 const menuRouter = require('./routes/menu');
 const authRouter = require('./routes/auth');
 const ownerRouter = require('./routes/owner');
+const searchRouter = require('./routes/search');
 const { sequelize } = require('./models');
 const logger = require('./logger');
 
@@ -46,6 +47,7 @@ app.use('/restaurant', restaurantRouter);
 app.use('/menu', menuRouter);
 app.use('/auth', authRouter)
 app.use('/owner', ownerRouter);
+app.use('/search', searchRouter);
 
 app.use(function(req, res, next) {
   next(createError(404));
