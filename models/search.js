@@ -3,14 +3,23 @@ const Sequelize = require('sequelize');
 module.exports = class Search extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
+            search_id: {
+                type: Sequelize.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
             search_word: {
                 type: Sequelize.STRING(100),
-                primaryKey: true,
+                allowNull: false,
             },
             search_count: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
-                defaultValue: 0
+                defaultValue: 1
+            },
+            university: {
+                type: Sequelize.STRING(100),
+                allowNull: false,
             }
         }, {
             sequelize,
