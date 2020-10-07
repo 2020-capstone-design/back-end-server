@@ -105,8 +105,10 @@ Once the dependencies are installed, you can run npm start to start the applicat
 ## Built With
 
 - [Node](https://nodejs.org/ko/)
+- [Express](https://expressjs.com/)
 - [PostgrSQL](https://www.postgresql.org/)
 - [AWS S3](https://aws.amazon.com/ko/s3/)
+- [Sequelize](https://sequelize.org/)
 ------
 
 ## License
