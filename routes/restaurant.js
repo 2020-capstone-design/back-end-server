@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {Restaurant, Menu} = require('../models');
+const {Restaurant, Menu, Search} = require('../models');
 const {Op} = require('sequelize');
 const multer = require('multer');
 const path = require('path');
@@ -76,8 +76,31 @@ router.get('/list_restaurants/:username', async (req, res) => {
     }
 });
 
-router.get('/list_recommended_restaurants/:restaurant_university&:hashtag', async (req, res) => {
+router.get('/search_restaurants/:restaurant_university&:hashtag', async (req, res) => {
     const hashtag = req.params.hashtag;
+    const university = req.params.restaurant_university;
+
+    const resultBySearch = await Search.findOne({
+        where: {search_word: hashtag},
+    })
+
+    if (resultBySearch) {
+        await Search.update({
+            search_count: resultBySearch.search_count + 1,
+        }, {
+            where: {
+                search_word: hashtag,
+                university: university
+            },
+        })
+    } else {
+        await Search.create({
+            search_word: hashtag,
+            search_count: 1,
+            university: university
+        })
+    }
+
     try {
         const resultByMenu = await Restaurant.findAll({
             include: [{
@@ -102,7 +125,7 @@ router.get('/list_recommended_restaurants/:restaurant_university&:hashtag', asyn
         })
     } catch (error) {
         console.error(error);
-        res.status(500).message('Internal Server Error');
+        res.status(500).json('Internal Server Error');
     }
 })
 
