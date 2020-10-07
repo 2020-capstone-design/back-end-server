@@ -48,6 +48,9 @@
 
 👉 **정보 Create, Update, Delete 시 토큰 인증 필요**
 
+👉 **검색어 순위 제공 (매일 리셋)**
+
+- node-scedule 이용
 ------
 
 ## Node
