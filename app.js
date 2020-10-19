@@ -14,7 +14,6 @@ const authRouter = require('./routes/auth');
 const ownerRouter = require('./routes/owner');
 const searchRouter = require('./routes/search');
 const { sequelize } = require('./models');
-const logger = require('./logger');
 
 const app = express();
 
