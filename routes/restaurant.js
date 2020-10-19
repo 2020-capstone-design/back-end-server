@@ -23,7 +23,7 @@ const upload = multer({
             cb(null, `original/${Date.now()}${path.basename(file.originalname)}`);
         },
     }),
-    limits: {fileSize: 3 * 1024 * 1024},
+    limits: {fileSize: 5 * 1024 * 1024},
 });
 
 router.get('/list_restaurants/:restaurant_university&:restaurant_category', async (req, res) => {
