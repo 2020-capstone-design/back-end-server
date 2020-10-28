@@ -2,17 +2,17 @@ require('dotenv').config();
 
 module.exports = {
     development: {
-      username: "beomju",
+      username: "mkewdxth",
       password: process.env.SEQUELIZE_PASSWORD,
-      database: "capstone",
-      host: "127.0.0.1",
+      database: "mkewdxth",
+      host: "arjuna.db.elephantsql.com",
       dialect: "postgres",
     },
     production: {
-        username: "beomju",
+        username: "mkewdxth",
         password: process.env.SEQUELIZE_PASSWORD,
-        database: "capstone",
-        host: "127.0.0.1",
+        database: "mkewdxth",
+        host: "arjuna.db.elephantsql.com",
         dialect: "postgres",
         logging: false,
     }
